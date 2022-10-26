@@ -1,14 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const fs = require('fs')
+const crypt = require('crypto')
 
 const dbUser = __dirname + "/../db/user.csv"
+const secret = "fjash<e8z7e-.%&/"
 
 router.post('/logon', (req,res)=>{
     if(!req.cookies.authorized){
         let user = req.body.username
         let passwd = req.body.passwd
         if(user && passwd){
+            passwd = crypt.createHash('sha256', secret).update(passwd).digest('base64')
             getUser(user, passwd, function(usr){
                 if(usr){
                     res.cookie('authorized', true)
