@@ -1,0 +1,15 @@
+{
+  "name": "ClassImgSRV",
+  "version": "1.0.0",
+  "description": "Classificatore immagini",
+  "main": "app.js",
+  "author": {
+    "name": "Daniele Cereghetti"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.8",
+    "express": "^4.18.1",
+    "express-fileupload": "^1.4.0"
+  }
+}
