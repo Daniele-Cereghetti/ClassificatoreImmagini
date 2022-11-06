@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const fs = require('fs')
-const { nextTick } = require('process')
 
 const dbImg = __dirname + "/../db/img.csv"
 
@@ -79,7 +78,7 @@ function getImages(callback){
 }
 
 function checkAuthorization(req, res, next){
-    if(req.cookies.authorized){
+    if(req.cookies.authorized == 'true'){
         next();
     }else{
         res.status(403).redirect("/")

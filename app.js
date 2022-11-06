@@ -1,11 +1,12 @@
 const express = require('express')
+//const https = require('https') https://www.youtube.com/watch?v=USrMdBF0zcg
 const cookie = require('cookie-parser')
 const upload = require('express-fileupload')
 
 const app = express()
 const port = 3000
 
-// FARE: dropdown x log out
+// FARE: da vedere
 
 app.set('view engine', 'ejs')
 
