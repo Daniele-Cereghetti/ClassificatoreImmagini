@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const fs = require('fs')
+const sqlite = require('sqlite3').verbose()
 
-const dbImg = __dirname + "/../db/img.csv"
+let db = new sqlite.Database(__dirname + '/../db/classimg.db')
 
 router.get('/', checkAuthorization, (req,res)=>{
     getImages(function(img){
@@ -30,10 +30,8 @@ router.post('/save', checkAuthorization, (req, res) => {
             }
         })
         //salvataggio info immagini
-        let record = filename+";"+req.body.nome+";"+req.body.prob+"\n"
-        fs.appendFile(dbImg, record, function (err) {
-            if (err) throw err;
-        });
+        let sql = `INSERT INTO img VALUES (${filename}, '${req.body.nome}', ${req.body.prob})`
+        db.run(sql)
     }else{
         res.send("nessun file")  
     }
@@ -54,26 +52,14 @@ router.post('/search', checkAuthorization, (req,res)=>{
     })
 })
 
-//metodo che ritorna immagini
-// array vouto -> no img o no file
+
 function getImages(callback){
-    fs.readFile(dbImg, function(err, data) {
-        if(!err){
-            let f = ""+data
-            f = f.split("\n")
-            let info = []
-            for(var i = 1; i < f.length; i++){
-                if(f[i]){
-                    let val = f[i].split(";")
-                    val[0] = val[0]+".jpg"
-                    val[2] = (val[2] * 100) + "%"
-                    info.push(val)
-                }
-            }
-            callback(info)
-        }else{
-            callback([])
-        }
+    db.all("SELECT * FROM img", (err, rows)=>{
+        let info = []
+        rows.forEach((row) => {
+            info.push([row.id+".jpg", row.nome, (row.probabilita * 100) + "%"])
+        });
+        callback(info)
     })
 }
 
