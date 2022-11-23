@@ -6,7 +6,7 @@ const upload = require('express-fileupload')
 const app = express()
 const port = 3000
 
-// FARE: rivedere cifratura, no corretta fa 44 caratteri al posto di 64
+// FARE: 
 
 app.set('view engine', 'ejs')
 
