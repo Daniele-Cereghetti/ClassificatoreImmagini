@@ -1,7 +1,7 @@
 {
-  "name": "ClassImgSRV",
+  "name": "ClassificatoreImmagini",
   "version": "1.0.0",
-  "description": "Classificatore immagini",
+  "description": "Programma che riconosce immagini",
   "main": "app.js",
   "author": {
     "name": "Daniele Cereghetti"

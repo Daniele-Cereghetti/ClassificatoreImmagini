@@ -14,7 +14,6 @@ router.post('/logon', (req,res)=>{
             getUser(user, passwd, (usr) => {
                 if(usr){
                     res.cookie('authorized', 'true')
-                    res.cookie('username', user)
                     res.redirect("/img")
                 }else{
                     res.render('index', {loginError: "Errore: username o password errati"})

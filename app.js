@@ -6,7 +6,7 @@ const upload = require('express-fileupload')
 const app = express()
 const port = 3000
 
-// FARE: 
+// FARE: admin page --> utenti e foto
 
 app.set('view engine', 'ejs')
 

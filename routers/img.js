@@ -18,22 +18,21 @@ router.post('/save', checkAuthorization, (req, res) => {
     if(req.files){
         //salvataggio immagine
         var file = req.files.img
-        var t = (file.name).split('.')
-        var ext = t[t.length-1]
         let d = new Date()
-        let filename = d.getFullYear()+""+d.getMonth()+""+d.getDay()+""+d.getHours()+""+d.getMinutes()+""+d.getMilliseconds()
-        file.mv('./images/'+filename+"."+ext, function(err){
+        let filename = d.getFullYear()+""+d.getMonth()+""+d.getDay()+""+d.getHours()+""+d.getMinutes()
+        filename = filename + Math.floor(Math.random() * 100000)
+        file.mv('./images/'+filename+".jpg", function(err){
             if(err){
-                res.status(409).send(err)
+                res.render('img/update', {err: "Errore durante l'upload dell'immagine, riprovare"})
             }else{
                 res.redirect("/img")
             }
         })
         //salvataggio info immagini
-        let sql = `INSERT INTO img VALUES (${filename}, '${req.body.nome}', ${req.body.prob})`
+        let sql = `INSERT INTO img VALUES (${filename},'${req.body.nome}', ${req.body.prob})`
         db.run(sql)
     }else{
-        res.send("nessun file")  
+        res.render('img/update', {err: "Nessun file caricato, non fare il furbo ;)"})
     }
 })
 
