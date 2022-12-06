@@ -1,29 +1,42 @@
 const express = require('express')
-//const https = require('https') https://www.youtube.com/watch?v=USrMdBF0zcg
-const cookie = require('cookie-parser')
+const session = require('express-session')
 const upload = require('express-fileupload')
 
 const app = express()
 const port = 3000
 
-// FARE: admin page --> utenti e foto
+// FARE: admin page --> utenti (cominciato a farlo) e foto
 
 app.set('view engine', 'ejs')
 
 app.use(express.static("images"))
 app.use(express.static("style"))
 app.use(express.urlencoded({ extended : true }))
-app.use(cookie())
+app.use(session({
+    secret : 'exsperandos',
+    resave : false, 
+    saveUninitialized : true,
+    cookie: { maxAge: 1000*60*60*24}})) //1h
 app.use(upload())
 
 const imgRouter = require('./routers/img')
 const loginRouter = require('./routers/login')
+const adminRouter = require('./routers/admin')
 
 app.use("/img", imgRouter)
 app.use("/login", loginRouter)
+app.use("/admin", adminRouter)
 
 app.get('/', (req,res)=>{
-    res.render('index')
+    if(req.session.username){
+        if(req.session.type == 1){
+            res.redirect("/admin")
+        }else{
+            res.redirect("/img")
+        }
+    }else{
+        res.render('index')
+    }
 })
 
 app.listen(port, () => {

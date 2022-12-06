@@ -63,7 +63,7 @@ function getImages(callback){
 }
 
 function checkAuthorization(req, res, next){
-    if(req.cookies.authorized == 'true'){
+    if(req.session.username){
         next();
     }else{
         res.status(403).redirect("/")

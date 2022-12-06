@@ -48,85 +48,27 @@
                 <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);" onclick="toggleFunction()" title="Toggle Navigation Menu">
                     <i class="fa fa-bars"></i>
                 </a>
-                <a href="/img" class="w3-bar-item w3-button">HOME</a>
-                <a href="/img/upload" class="w3-bar-item w3-button w3-hide-small"><i class="fa fa-solid fa-file"></i> UPLOAD</a>
+                <a href="/" class="w3-bar-item w3-button">ADM pages</a>
                 <div class="w3-bar-item w3-button w3-right w3-hide-small drop">
                     <span><i class="fa fa-duotone fa-user"></i></span>
                     <div class="drop-content">
                         <a href="/login/logout" class="w3-bar-item w3-button w3-hide-small">Logout</a>
                     </div>
                 </div>
-                <a href="#" class="w3-bar-item w3-button w3-hide-small w3-right">
-                    <form class="d-flex" method="post" action="/img/search">
-                        <input class="form-control me-2" type="search" name="itemasked" placeholder="Search" aria-label="Search">
-                    </form>
-                </a>
-            </div>
-
-            <!-- Navbar on small screens -->
-            <div id="navDemo" class="w3-bar-block w3-white w3-hide w3-hide-large w3-hide-medium">
-                <span class="w3-bar-item w3-button w3-right"><i class="fa fa-duotone fa-user"></i> User</span>
-                <a href="/img/upload" class="w3-bar-item w3-button" onclick="toggleFunction()"><i class="fa fa-solid fa-file"></i> UPLOAD</a>
-                <a href="/login/logout" class="w3-bar-item w3-button" onclick="toggleFunction()">Logout</a>
-                <span class="w3-bar-item w3-button w3-right">
-                    <form class="d-flex" method="post" action="/img/search">
-                        <input class="form-control me-2" type="search" name="itemasked" placeholder="Search" aria-label="Search">
-                    </form>
-                </span>
             </div>
         </div>
 
         <!-- First Parallax Image with Logo Text -->
         <div class="bgimg-1 w3-display-container w3-opacity-min" id="home">
             <div class="w3-display-middle" style="white-space:nowrap;">
-                <span class="w3-center w3-padding-large w3-black w3-xlarge w3-wide w3-animate-opacity">Images</span>
+                <span class="w3-center w3-padding-large w3-black w3-xlarge w3-wide w3-animate-opacity">MY ADM <span class="w3-hide-small">PAGE</span></span>
             </div>
         </div>
 
-        <div class="w3-content w3-container w3-padding-64" id="portfolio">
-            <% for(var i = 0; i < data.length; i++){ %>
-                <% if(i % 4 == 0 ){ %>
-                    <div class="w3-row-padding w3-center">
-                <% } %>
-                <div class="w3-col m3">
-                    <img src="/<%= data[i][0] %>" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="<%= data[i][1] %> -- <%= data[i][2] %>">
-                </div>
-                <% if(i % 4 == 0 && i != 0){ %>
-                    </div>
-                <% } %>
-            <% } %>
-            
-            <% if(data.length % 4 != 0){ %>
-                </div>
-            <% } %>
-        </div>
-
-        <!-- Modal for full size images on click-->
-        <div id="modal01" class="w3-modal w3-black" onclick="this.style.display='none'">
-            <span class="w3-button w3-large w3-black w3-display-topright" title="Close Modal Image"><i class="fa fa-remove"></i></span>
-            <div class="w3-modal-content w3-animate-zoom w3-center w3-transparent w3-padding-64">
-                <img id="img01" class="w3-image">
-                <p id="caption" class="w3-opacity w3-large"></p>
-            </div>
-        </div>
-
-        <!-- Modal for login onclick="this.style.display='none'"-->
-        <div id="modalLogin" class="w3-modal">
-            <span class="w3-button w3-large w3-light-grey w3-display-topright" 
-                onclick="document.getElementById('modalLogin').style.display='none'"
-                title="Close Modal Image">
-                    <i class="fa fa-remove"></i>
-            </span>
-            <div class="w3-white w3-animate-zoom w3-center" style="width: 40%; margin-left: auto;margin-right: auto;">
-                <h1>Login</h1>
-                <form method="post" action="/login/logon">
-                    <input class="form-control me-2" placeholder="username" type="text" name="username" ><br>
-                    <input class="form-control me-2" placeholder="password" type="password" name="passwd" ><br>
-                    <input type="submit" value="Login">
-                </form>
-                <% if(locals.loginError){ %>
-                    <p style="color: red;" id="loginError"> <%= loginError %></p>
-                <% } %>
+        <div class="w3-content w3-container w3-padding-64 w3-center" id="portfolio">
+            <div class="w3-row-padding w3-center">
+                <a href="admin/super" class="w3-bar-item w3-button w3-margin">admin</a>
+                <a href="admin/normal" class="w3-bar-item w3-button w3-margin">normal</a>
             </div>
         </div>
 
@@ -144,18 +86,6 @@
         </footer>
         
         <script>
-            // Modal Image Gallery
-            function onClick(element) {
-                document.getElementById("img01").src = element.src;
-                document.getElementById("modal01").style.display = "block";
-                var captionText = document.getElementById("caption");
-                captionText.innerHTML = element.alt;
-            }
-
-            function loginModal() {
-                document.getElementById("modalLogin").style.display = "block";
-            }
-
             // Change style of navbar on scroll
             window.onscroll = function() {myFunction()};
             function myFunction() {
@@ -177,8 +107,5 @@
                 }
             }
         </script>
-        <% if(locals.loginError){ %>
-            <script>loginModal();</script>
-        <% } %>
     </body>
 </html>
