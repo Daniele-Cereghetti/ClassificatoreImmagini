@@ -5,7 +5,7 @@ const upload = require('express-fileupload')
 const app = express()
 const port = 3000
 
-// FARE: admin page --> utenti (cominciato a farlo) e foto
+// FARE: admin page --> utenti (fare azioni --> blocco, reset password, eliminazione) e foto
 
 app.set('view engine', 'ejs')
 

@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/style.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <style>
             body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
             body, html {
@@ -45,7 +46,16 @@
         <!-- Navbar (sit on top) -->
         <div class="w3-top">
             <div class="w3-bar" id="myNavbar">
+                <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);" onclick="toggleFunction()" title="Toggle Navigation Menu">
+                    <i class="fa fa-bars"></i>
+                </a>
                 <a href="/" class="w3-bar-item w3-button">ADM pages</a>
+                <div class="w3-bar-item w3-button w3-right w3-hide-small drop">
+                    <span><i class="fa fa-duotone fa-user"></i></span>
+                    <div class="drop-content">
+                        <a href="/login/logout" class="w3-bar-item w3-button w3-hide-small">Logout</a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -56,9 +66,22 @@
             </div>
         </div>
 
-        <div class="w3-content w3-container w3-padding-64 w3-center" id="portfolio">
-            <div class="w3-row-padding w3-center">
-                <span class="w3-bar-item w3-button w3-margin">pagina amministrazione normal</span>
+         <!-- MAIN -->
+        <div class="w3-content w3-container w3-padding-64" id="portfolio">    
+            <input type="text" placeholder="username o id" id="search">
+
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="list">
+                    </tbody>
+                  </table>
             </div>
         </div>
 
@@ -74,6 +97,24 @@
                 <i class="fa fa-linkedin w3-hover-opacity"></i>
             </div>
         </footer>
+
+        <script>
+            $(document).ready(function(){
+                $("#search").keyup(function(){
+                    let ite = $("#search").val()
+                    $.post("/admin/normal/search", {item: ite},function(data, status){
+                        data = JSON.parse(data);
+                        let list = "";
+                        for(var i = 0; i < data.length; i++){
+                            list += "<tr> <td>" + data[i].id + "</td>";
+                            list += "<td>" + data[i].username + "</td>";
+                            list += "<td> ACTIONS </td> </tr>";                    
+                        }
+                        $("#list").html(list);
+                    });
+                });
+            });
+        </script>
         
         <script>
             // Change style of navbar on scroll

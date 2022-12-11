@@ -29,7 +29,7 @@ router.post('/save', checkAuthorization, (req, res) => {
             }
         })
         //salvataggio info immagini
-        let sql = `INSERT INTO img VALUES (${filename},'${req.body.nome}', ${req.body.prob})`
+        let sql = `INSERT INTO img VALUES (${filename},'${req.body.nome}', ${req.body.prob}, ${req.session.userid})`
         db.run(sql)
     }else{
         res.render('img/update', {err: "Nessun file caricato, non fare il furbo ;)"})
@@ -53,10 +53,11 @@ router.post('/search', checkAuthorization, (req,res)=>{
 
 
 function getImages(callback){
-    db.all("SELECT * FROM img", (err, rows)=>{
+    const sql = "SELECT img.id, img.nome, img.probabilita, user.username FROM img INNER JOIN user ON img.user_id = user.id"
+    db.all(sql, (err, rows)=>{
         let info = []
         rows.forEach((row) => {
-            info.push([row.id+".jpg", row.nome, (row.probabilita * 100) + "%"])
+            info.push([row.id+".jpg", row.nome, (row.probabilita * 100) + "%", row.username])
         });
         callback(info)
     })

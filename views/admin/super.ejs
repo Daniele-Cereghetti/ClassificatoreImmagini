@@ -45,7 +45,16 @@
         <!-- Navbar (sit on top) -->
         <div class="w3-top">
             <div class="w3-bar" id="myNavbar">
+                <a class="w3-bar-item w3-button w3-hover-black w3-hide-medium w3-hide-large w3-right" href="javascript:void(0);" onclick="toggleFunction()" title="Toggle Navigation Menu">
+                    <i class="fa fa-bars"></i>
+                </a>
                 <a href="/" class="w3-bar-item w3-button">ADM pages</a>
+                <div class="w3-bar-item w3-button w3-right w3-hide-small drop">
+                    <span><i class="fa fa-duotone fa-user"></i></span>
+                    <div class="drop-content">
+                        <a href="/login/logout" class="w3-bar-item w3-button w3-hide-small">Logout</a>
+                    </div>
+                </div>
             </div>
         </div>
 
