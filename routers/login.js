@@ -13,10 +13,14 @@ router.post('/logon', (req,res)=>{
             passwd = crypt.createHash('sha256').update(passwd).digest('hex').toString()
             getUser(user, passwd, (usr) => {
                 if(usr){
-                    req.session.userid = usr.id
-                    req.session.type = usr.type
-                    req.session.username = usr.username
-                    res.redirect("/")                    
+                    if(usr.blocked == 0){
+                        req.session.userid = usr.id
+                        req.session.type = usr.type
+                        req.session.username = usr.username
+                        res.redirect("/")
+                    }else{
+                        res.render('index', {loginError: "Errore: utente bloccato"})
+                    }
                 }else{
                     res.render('index', {loginError: "Errore: username o password errati"})
                 }
@@ -37,8 +41,8 @@ router.get('/logout', (req,res)=>{
 })
 
 function getUser(user, passwd, callback){
-    let sql = "SELECT id, username, type FROM user WHERE username = ? AND password = ?"
-    db.get(sql, [user, passwd], (err, row) => {
+    let sql = "SELECT id, username, blocked,type FROM user WHERE (username = ? OR email = ?) AND password = ?"
+    db.get(sql, [user, user,passwd], (err, row) => {
         if(err || !row){
             callback(undefined)
         }else{

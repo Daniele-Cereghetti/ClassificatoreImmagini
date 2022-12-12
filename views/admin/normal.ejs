@@ -68,18 +68,21 @@
 
          <!-- MAIN -->
         <div class="w3-content w3-container w3-padding-64" id="portfolio">    
-            <input type="text" placeholder="username o id" id="search">
+            <input type="text" placeholder="username or id" id="search">
 
             <div>
                 <table>
                     <thead>
                         <tr>
                             <th>id</th>
-                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Username</th>
+                            <th>Blocked</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="list">
+                        
                     </tbody>
                   </table>
             </div>
@@ -100,20 +103,35 @@
 
         <script>
             $(document).ready(function(){
-                $("#search").keyup(function(){
-                    let ite = $("#search").val()
-                    $.post("/admin/normal/search", {item: ite},function(data, status){
-                        data = JSON.parse(data);
-                        let list = "";
-                        for(var i = 0; i < data.length; i++){
-                            list += "<tr> <td>" + data[i].id + "</td>";
-                            list += "<td>" + data[i].username + "</td>";
-                            list += "<td> ACTIONS </td> </tr>";                    
-                        }
-                        $("#list").html(list);
-                    });
-                });
+                $("#search").keyup(searchRequest);
             });
+
+            function searchRequest(){
+                let ite = $("#search").val()
+                $.post("/admin/normal/search", {item: ite},function(data, status){
+                    data = JSON.parse(data);
+                    let list = "";
+                    for(var i = 0; i < data.length; i++){
+                        list += "<tr> <td>" + data[i].id + "</td>";
+                        list += "<td>" + data[i].email + "</td>";
+                        list += "<td>" + data[i].username + "</td>";
+                        list += "<td>" + data[i].blocked + "</td>";
+                        if(data[i].blocked == 1){
+                            list += "<td> <i class='fa fa-solid fa-ban w3-hover-opacity w3-green'";
+                        }else{
+                            list += "<td> <i class='fa fa-solid fa-ban w3-hover-opacity w3-red'";
+                        }
+                        list += "onclick='block(this, \""+data[i].username + "\")'></i> </td> </tr>";                    
+                    }
+                    $("#list").html(list);
+                });
+            }
+
+            function block(obj, usr){
+                $.post("/admin/normal/block", {username: usr},function(data, status){
+                    searchRequest()
+                });
+            }
         </script>
         
         <script>

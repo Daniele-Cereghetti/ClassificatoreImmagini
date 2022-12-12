@@ -1,9 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const crypt = require('crypto')
-const internal = require('stream')
-const { type } = require('express/lib/response')
-const { is } = require('express/lib/request')
 const sqlite = require('sqlite3').verbose()
 
 let db = new sqlite.Database(__dirname + '/../db/classimg.db')
@@ -24,8 +20,21 @@ router.post('/normal/search', checkAuthorization, (req, res) => {
     })
 })
 
+// ajax request per blocco utente
+// blocco così con quella email no nuovo account
+router.post('/normal/block/', checkAuthorization, (req, res) => {
+    let username = req.body.username
+    blockUser(username, (result) =>{
+        if(result == 0){
+            res.send(JSON.stringify("ok"))
+        }else{
+            res.send(JSON.stringify("error"))
+        }
+    })
+})
+
 function getUser(val, callback){
-    let sql = "SELECT id, username FROM user WHERE type = 2 AND "
+    let sql = "SELECT id, email, username, blocked FROM user WHERE type = 2 AND "
     if(isNaN(val)){
         sql += `username LIKE '%${val}%'`
     }else{
@@ -36,6 +45,17 @@ function getUser(val, callback){
             callback(undefined)
         }else{
             callback(row)
+        }
+    })
+}
+
+function blockUser(username, callback){
+    let sql = "UPDATE user SET blocked = NOT blocked WHERE type = 2 AND username = ?"
+    db.run(sql, [username], (data, err) => {
+        if(err){
+            callback(1) // blocco non riuscito
+        }else{
+            callback(0) // blocco riuscito
         }
     })
 }
