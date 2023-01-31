@@ -6,33 +6,37 @@ let db = new sqlite.Database(__dirname + '/../db/classimg.db')
 
 router.get('/', checkAuthorization, (req,res)=>{
     getImages(function(img){
-        res.render('img/index', { data : img})
+        res.render('page', { content: 'img/index', title: 'home', namePage: 'Images', data : img})
     })
 })
 
 router.get('/upload', checkAuthorization, (req,res)=>{
-    res.render('img/update')
+    res.render('page', { content: 'img/update', title: 'Upload', namePage: 'Upload img'})
 })
 
 router.post('/save', checkAuthorization, (req, res) => {
     if(req.files){
-        //salvataggio immagine
         var file = req.files.img
         let d = new Date()
         let filename = d.getFullYear()+""+d.getMonth()+""+d.getDay()+""+d.getHours()+""+d.getMinutes()
         filename = filename + Math.floor(Math.random() * 100000)
         file.mv('./images/'+filename+".jpg", function(err){
             if(err){
-                res.render('img/update', {err: "Errore durante l'upload dell'immagine, riprovare"})
+                res.render('page', { 
+                    content: 'img/update', title: 'Upload', namePage: 'Upload img',
+                    err: "Errore durante l'upload dell'immagine, riprovare"
+                })
             }else{
                 res.redirect("/img")
             }
         })
-        //salvataggio info immagini
         let sql = `INSERT INTO img VALUES (${filename},'${req.body.nome}', ${req.body.prob}, ${req.session.userid})`
         db.run(sql)
     }else{
-        res.render('img/update', {err: "Nessun file caricato, non fare il furbo ;)"})
+        res.render('page', {
+            content: 'img/update', title: 'Upload', namePage: 'Upload img',
+            err: "Nessun file caricato, non fare il furbo ;)"
+        })
     }
 })
 
@@ -47,7 +51,7 @@ router.post('/search', checkAuthorization, (req,res)=>{
                 }
             }
         }
-        res.render('img/index', { data : info})
+        res.render('page', { content: 'img/index', title: 'home', namePage: 'Images', data : info})
     })
 })
 
