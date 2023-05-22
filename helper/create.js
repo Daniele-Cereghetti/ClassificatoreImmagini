@@ -7,7 +7,7 @@ db.serialize(()=>{
     db.run("DROP TABLE IF EXISTS usertype")
     db.run("DROP TABLE IF EXISTS user")
     db.run("DROP TABLE IF EXISTS img")
-    console.log("Cleared old data if they exists :)")
+    console.log("Preparing enviroment ok")
 
     db.run("CREATE TABLE usertype (id INTEGER PRIMARY KEY, nome varchar(25))")
     db.run("CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT, email varchar(25) UNIQUE, username varchar(25) UNIQUE, password char(64), blocked BOOLEAN, type INTEGER, FOREIGN KEY (type) REFERENCES usertype(id))")
@@ -16,7 +16,7 @@ db.serialize(()=>{
 
     db.run("INSERT INTO usertype VALUES (1, 'admin')")
     db.run("INSERT INTO usertype VALUES (2, 'normal')")
-    console.log("Add dafault rules ok")
+    console.log("Add dafault user rules ok")
 
     db.run("INSERT INTO user VALUES (1, 'root@prova.ch', 'root', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', false, 1)")
     db.run("INSERT INTO user VALUES (2, 'user@prova.ch', 'user', '317b32c143692b9939c197f6a5df54f9698df9a4882fe8bf19608968662be4fa', false, 2)")
@@ -24,15 +24,16 @@ db.serialize(()=>{
 
     db.run("INSERT INTO img VALUES (2022931858634, 'robin, American robin, Turdus migratorius', 0.9275, 2)")
     db.run("INSERT INTO img VALUES (2022931859219, 'coho, cohoe, coho salmon, blue jack, silver salmon, Oncorhynchus kisutch', 0.8798999999999999, 2)")
-    console.log("Add default img ok")
+    console.log("Add default imgs ok")
 
     db.run("INSERT INTO user VALUES (3, 'roberto@prova.ch', 'roberto', '317b32c143692b9939c197f6a5df54f9698df9a4882fe8bf19608968662be4fa', false, 2)")
     db.run("INSERT INTO user VALUES (4, 'francesco@prova.ch', 'francesco', '317b32c143692b9939c197f6a5df54f9698df9a4882fe8bf19608968662be4fa', false, 2)")
     db.run("INSERT INTO user VALUES (5, 'geso@prova.ch', 'geso', '317b32c143692b9939c197f6a5df54f9698df9a4882fe8bf19608968662be4fa', false, 2)")
     db.run("INSERT INTO user VALUES (6, 'giorgia@prova.ch', 'giorgia', '317b32c143692b9939c197f6a5df54f9698df9a4882fe8bf19608968662be4fa', true, 2)")
+    db.run("INSERT INTO user VALUES (99, 'test@test.ch', 'test', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', true, 1)")
     console.log("Add test users ok")
 })
 
 db.close()
 console.log("---------------------")
-console.log("DB creato :)")
+console.log("DB created :)")

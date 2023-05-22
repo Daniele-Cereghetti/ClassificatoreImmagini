@@ -108,7 +108,8 @@
 
             function searchRequest(){
                 let ite = $("#search").val()
-                $.post("/admin/normal/search", {item: ite},function(data, status){
+                if(ite == "") {$("#list").html("");return;}
+                $.post("/admin/normal/search", {item: ite}, function(data, status){
                     data = JSON.parse(data);
                     let list = "";
                     for(var i = 0; i < data.length; i++){
@@ -121,15 +122,17 @@
                         }else{
                             list += "<td> <i class='fa fa-solid fa-ban w3-hover-opacity w3-red'";
                         }
-                        list += "onclick='block(this, \""+data[i].username + "\")'></i> </td> </tr>";                    
+                        list += "onclick='block(\""+data[i].username + "\")'></i> </td> </tr>";                    
                     }
                     $("#list").html(list);
                 });
             }
 
-            function block(obj, usr){
-                $.post("/admin/normal/block", {username: usr},function(data, status){
+            function block(usr){
+                $.post("/admin/block", {username: usr},function(data, status){
                     searchRequest()
+                }).fail((response) => {
+                    alert("Errore durante il blocco dell'utente\nIn caso si ripeti contattare l'assistenza :)");
                 });
             }
         </script>
