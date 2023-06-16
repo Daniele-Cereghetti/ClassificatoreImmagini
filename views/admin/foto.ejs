@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Classificatore immagini</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <!-- Navbar (sit on top) -->
+        <div class="w3-top">
+            <div class="w3-bar" id="myNavbar">
+                <a href="/" class="w3-bar-item w3-button">ADM pages</a>
+                <div class="w3-bar-item w3-button w3-right w3-hide-small drop">
+                    <span><i class="fa fa-duotone fa-user"></i></span>
+                    <div class="drop-content">
+                        <a href="/login/logout" class="w3-bar-item w3-button w3-hide-small">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- First Parallax Image with Logo Text -->
+        <div class="bgimg-1 w3-display-container w3-opacity-min" id="home">
+            <div class="w3-display-middle" style="white-space:nowrap;">
+                <span class="w3-center w3-padding-large w3-black w3-xlarge w3-wide w3-animate-opacity">ADM <span class="w3-hide-small">PHOTOS</span> PAGE</span>
+            </div>
+        </div>
+
+        <div class="w3-content w3-container w3-padding-64 w3-center" id="portfolio">
+            <div class="w3-row-padding w3-center">
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Foto</th>
+                                <th>User</th>
+                                <th>time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(var i = 0; i < reports.length; i++){ %>
+                                <tr>
+                                    <td><img src="../<%= reports[i].img_id %>.jpg" width="150px" height="120px"></td>
+                                    <td><%= reports[i].user_id %></td>
+                                    <td name="timing"><%= reports[i].time %> </td>
+                                    <td><button value="<%= reports[i].img_id %>">Decide</button></td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                      </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="w3-center w3-black w3-padding-64 w3-opacity w3-hover-opacity-off">
+            <a href="#home" class="w3-button w3-light-grey"><i class="fa fa-arrow-up w3-margin-right"></i>To the top</a>
+            <div class="w3-xlarge w3-section">
+                <i class="fa fa-facebook-official w3-hover-opacity"></i>
+                <i class="fa fa-instagram w3-hover-opacity"></i>
+                <i class="fa fa-snapchat w3-hover-opacity"></i>
+                <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+                <i class="fa fa-twitter w3-hover-opacity"></i>
+                <i class="fa fa-linkedin w3-hover-opacity"></i>
+            </div>
+        </footer>
+
+        <script>
+             $('[name=timing]').each((index, element) => {
+                element.val = element.innerHTML
+            });
+            
+            var x = setInterval(function() {
+                $('[name=timing]').each((index, element) => {
+                    let reportTime = new Date(element.val)
+                    let now = new Date();
+                    let distance = Math.floor((now - reportTime)/1000); //secondi
+
+                    
+                    if (distance < 60){ // Seconds
+                        element.innerHTML = distance + " sec ago";
+                    }else if (distance < 3600){ // Minutes
+                        var minutes = Math.floor(distance/60);
+                        element.innerHTML = minutes + " min ago";
+                    }else if (distance < 86400){ // Hours
+                        var hours = Math.floor(distance / 60 / 60);
+                        element.innerHTML = hours + " hour ago";
+                    }else { //Days
+                        var days = Math.floor(distance / 60 / 60 / 24);
+                        element.innerHTML = days + " days ago"
+                    }
+                })
+            }, 1000);
+
+
+            $(document).ready(function(){
+                $("button").click(function(){
+                    let val = this.value
+                    if (confirm("Eliminare l'immagine segnalata ?") == true) {
+                        if(prompt("Scriva la parola DELETE per confermare") == "DELETE"){
+                            $.post("/admin/foto/del", {rep_id: val},function(data, status){
+                                alert("Immagine eliminata :)")
+                                location.reload()
+                            }).fail((response) => {
+                                alert("Errore durante l'eliminazione dell'immagine\nIn caso si ripeti contattare l'assistenza :)");
+                            });
+                        }else{
+                            alert("Operazione annulata")
+                        }
+                    }else if(confirm("Manetenere l'immagine ?") == true){
+                        if(prompt("Scriva la parola MANTAIN per confermare") == "MANTAIN"){
+                            $.post("/admin/foto/man", {rep_id: val},function(data, status){
+                                alert("Immagine mantenuta e report eliminato :)")
+                                location.reload()
+                            }).fail((response) => {
+                                alert("Errore durante l'eliminazione dell'immagine\nIn caso si ripeti contattare l'assistenza :)");
+                            });
+                        }else{
+                            alert("Operazione annulata")
+                        }
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

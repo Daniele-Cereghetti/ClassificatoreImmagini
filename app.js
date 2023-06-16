@@ -5,7 +5,8 @@ const upload = require('express-fileupload')
 const app = express()
 const port = 3000
 
-// FARE: admin page --> user admin e foto (segnala)
+// FARE: admin foto page --> segnalazione da client,
+//                           grafico degli utenti che ricevono e fanno segnalazioni in numeri (sia x utente che generale)
 // requisito prossimo --> registrazione + reset password (mail)
 
 app.set('view engine', 'ejs')
