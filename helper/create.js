@@ -14,7 +14,7 @@ db.serialize(()=>{
     db.run("CREATE TABLE usertype (id INTEGER PRIMARY KEY, nome varchar(25))")
     db.run("CREATE TABLE user (id INTEGER PRIMARY KEY AUTOINCREMENT, email varchar(25) UNIQUE, username varchar(25) UNIQUE, password char(64), blocked BOOLEAN, type INTEGER, FOREIGN KEY (type) REFERENCES usertype(id))")
     db.run("CREATE TABLE img (id INTEGER PRIMARY KEY, nome varchar(50), probabilita double, user_id INTEGER, FOREIGN KEY (user_id) REFERENCES user(id))")
-    db.run("CREATE TABLE report (id INTEGER PRIMARY KEY, time datetime, img_id INTEGER, user_id INTEGER, FOREIGN KEY (img_id) REFERENCES img(id), FOREIGN KEY (user_id) REFERENCES user(id))")
+    db.run("CREATE TABLE report (id INTEGER PRIMARY KEY AUTOINCREMENT, time datetime, img_id INTEGER, user_id INTEGER, FOREIGN KEY (img_id) REFERENCES img(id), FOREIGN KEY (user_id) REFERENCES user(id))")
     console.log("Add Tables ok") // user_id, utente che ha fatto la segnalazione
 
     db.run("INSERT INTO usertype VALUES (1, 'admin')")
@@ -38,7 +38,6 @@ db.serialize(()=>{
         console.log("Add test users ok")
 
         db.run("INSERT INTO report VALUES (1, '2023-05-11 14:23:44',2022931858634, 2)")
-        db.run("INSERT INTO report VALUES (2, '2023-06-16 20:18:44',2022931859219, 3)")
         console.log("Add test reports ok")
     }
 })

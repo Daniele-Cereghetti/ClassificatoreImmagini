@@ -1,10 +1,15 @@
 <div class="w3-content w3-container w3-padding-64" id="portfolio">
     <% for(var i = 0; i < data.length; i++){ %>
         <% if(i % 4 == 0 ){ %>
-            <div class="w3-row-padding w3-center">
+            <div class="w3-row-padding w3-center" >
         <% } %>
-        <div class="w3-col m3">
-            <img src="/<%= data[i][0] %>" style="width:100%" onclick="onClick(this)" class="w3-hover-opacity" alt="<%= data[i][3] %> --> <%= data[i][1] %> - <%= data[i][2] %>">
+        <div class="w3-col m3" onload="setUp(this)">
+            <img src="/<%= data[i][0] %>" 
+                alt="<%= data[i][3] %> --> <%= data[i][1] %> - <%= data[i][2] %>"
+                style="width: 150px;height: 150px;"
+                onclick="showBigImg(this)"
+            />
+            <br><p oncontextmenu="javascript:segnala(this);return false;">scemo</p>
         </div>
         <% if(i % 4 == 0 && i != 0){ %>
             </div>
@@ -25,37 +30,26 @@
     </div>
 </div>
 
-<!-- Modal for login onclick="this.style.display='none'"-->
-<div id="modalLogin" class="w3-modal">
-    <span class="w3-button w3-large w3-light-grey w3-display-topright" 
-        onclick="document.getElementById('modalLogin').style.display='none'"
-        title="Close Modal Image">
-            <i class="fa fa-remove"></i>
-    </span>
-    <div class="w3-white w3-animate-zoom w3-center" style="width: 40%; margin-left: auto;margin-right: auto;">
-        <h1>Login</h1>
-        <form method="post" action="/login/logon">
-            <input class="form-control me-2" placeholder="username" type="text" name="username" ><br>
-            <input class="form-control me-2" placeholder="password" type="password" name="passwd" ><br>
-            <input type="submit" value="Login">
-        </form>
-        <% if(locals.loginError){ %>
-            <p style="color: red;" id="loginError"> <%= loginError %></p>
-        <% } %>
-    </div>
-</div>
 
 <script>
-    // Modal Image Gallery
-    function onClick(element) {
-        document.getElementById("img01").src = element.src;
-        document.getElementById("modal01").style.display = "block";
-        var captionText = document.getElementById("caption");
-        captionText.innerHTML = element.alt;
+
+    function segnala(ob){
+        var srcImg = ob.parentElement.querySelector("img").src;
+        var imgId = srcImg.split("/")[3].split(".")[0];
+        if(confirm("Sicuro di voler segnalare l'immagine ?")){
+            $.post("/img/report", {id: imgId},function(data, status){
+                alert("Segnalazione completata con successo");
+            }).fail((response) => {
+                alert("Errore durante la segnalazione\nIn caso si ripeti contattare l'assistenza :)");
+            });
+        }
     }
 
-    function loginModal() {
-        document.getElementById("modalLogin").style.display = "block";
+    // show big img
+    function showBigImg(element) {
+        document.getElementById("img01").src = element.src;
+        document.getElementById("modal01").style.display = "block";
+        document.getElementById("caption").innerHTML = element.alt;
     }
 
     // Change style of navbar on scroll
@@ -79,7 +73,3 @@
         }
     }
 </script>
-
-<% if(locals.loginError){ %>
-    <script>loginModal();</script>
-<% } %>

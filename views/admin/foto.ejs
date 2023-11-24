@@ -37,7 +37,8 @@
                         <thead>
                             <tr>
                                 <th>Foto</th>
-                                <th>User</th>
+                                <th>User reported</th>
+                                <th>Report from</th>
                                 <th>time</th>
                                 <th>Action</th>
                             </tr>
@@ -46,7 +47,8 @@
                             <% for(var i = 0; i < reports.length; i++){ %>
                                 <tr>
                                     <td><img src="../<%= reports[i].img_id %>.jpg" width="150px" height="120px"></td>
-                                    <td><%= reports[i].user_id %></td>
+                                    <td><%= reports[i].user_img %></td>
+                                    <td><%= reports[i].report_from %></td>
                                     <td name="timing"><%= reports[i].time %> </td>
                                     <td><button value="<%= reports[i].img_id %>">Decide</button></td>
                                 </tr>
@@ -71,7 +73,7 @@
         </footer>
 
         <script>
-             $('[name=timing]').each((index, element) => {
+            $('[name=timing]').each((index, element) => {
                 element.val = element.innerHTML
             });
             
@@ -81,7 +83,6 @@
                     let now = new Date();
                     let distance = Math.floor((now - reportTime)/1000); //secondi
 
-                    
                     if (distance < 60){ // Seconds
                         element.innerHTML = distance + " sec ago";
                     }else if (distance < 3600){ // Minutes
@@ -95,7 +96,7 @@
                         element.innerHTML = days + " days ago"
                     }
                 })
-            }, 1000);
+            }, 500);
 
 
             $(document).ready(function(){
@@ -103,7 +104,7 @@
                     let val = this.value
                     if (confirm("Eliminare l'immagine segnalata ?") == true) {
                         if(prompt("Scriva la parola DELETE per confermare") == "DELETE"){
-                            $.post("/admin/foto/del", {rep_id: val},function(data, status){
+                            $.post("/admin/foto/del", {rep_img_id: val},function(data, status){
                                 alert("Immagine eliminata :)")
                                 location.reload()
                             }).fail((response) => {
@@ -114,7 +115,7 @@
                         }
                     }else if(confirm("Manetenere l'immagine ?") == true){
                         if(prompt("Scriva la parola MANTAIN per confermare") == "MANTAIN"){
-                            $.post("/admin/foto/man", {rep_id: val},function(data, status){
+                            $.post("/admin/foto/man", {rep_img_id: val},function(data, status){
                                 alert("Immagine mantenuta e report eliminato :)")
                                 location.reload()
                             }).fail((response) => {

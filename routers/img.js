@@ -55,6 +55,17 @@ router.post('/search', checkAuthorization, (req,res)=>{
     })
 })
 
+router.post("/report", checkAuthorization, (req, res)=>{
+    let imgId = req.body.id
+    reportImage(imgId, req.session.username, function(err){
+        if(!err){
+            res.send(JSON.stringify("ok"))
+        }else{
+            res.status(409).send(JSON.stringify("error"))
+        }
+    });
+});
+
 
 function getImages(callback){
     const sql = "SELECT img.id, img.nome, img.probabilita, user.username FROM img INNER JOIN user ON img.user_id = user.id"
@@ -67,6 +78,23 @@ function getImages(callback){
     })
 }
 
+function reportImage(id, user, callback){
+    var sql = "SELECT id FROM user WHERE username = ?"
+    var currentdate = new Date(); 
+    var datetime = currentdate.getFullYear() + "-"
+                + (currentdate.getMonth()+1)  + "-" 
+                + currentdate.getDate() + " "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+    db.get(sql, [user],(err, row)=>{
+        sql = "INSERT INTO report (time, img_id, user_id) VALUES (?, ?, ?)"
+        db.run(sql, [datetime, id, row.id], (data, err) => {
+            callback(err)
+        })
+    });
+}
+
 function checkAuthorization(req, res, next){
     if(req.session.username){
         next();
@@ -74,5 +102,6 @@ function checkAuthorization(req, res, next){
         res.status(403).redirect("/")
     }
 }
+
 
 module.exports = router

@@ -30,7 +30,7 @@ router.post('/block', checkAuthorization, (req, res) => {
         if(!err){
             res.send(JSON.stringify("ok"))
         }else{
-            res.status(409).send(JSON.stringify("error"))
+            res.status(404).send(JSON.stringify("error"))
         }
     })
 })
@@ -55,14 +55,20 @@ router.get('/foto', checkAuthorization, (req,res)=>{
 
 //ajax eliminazione foto segnalata
 router.post('/foto/del', checkAuthorization, (req, res) => {
-    let id = req.body.rep_id
+    let id = req.body.rep_img_id
     deleteReport(id,(err) =>{
         if(!err){
-            fs.unlink(__dirname+"/../images/"+id+".jpg", (error) => {
-                if (error){
-                    res.status(409).send(JSON.stringify("error"))
+            deleteImg(id, (errImg)=>{
+                if(!errImg){
+                    fs.unlink(__dirname+"/../images/"+id+".jpg", (error) => {
+                        if (error){
+                            res.status(409).send(JSON.stringify("error"))
+                        }else{
+                            res.send(JSON.stringify("ok"))
+                        }
+                    })
                 }else{
-                    res.send(JSON.stringify("ok"))
+                    res.status(409).send(JSON.stringify("error"))
                 }
             })
         }else{
@@ -73,7 +79,7 @@ router.post('/foto/del', checkAuthorization, (req, res) => {
 
 //ajax mantenimento foto segnalata
 router.post('/foto/man', checkAuthorization, (req, res) => {
-    let id = req.body.rep_id
+    let id = req.body.rep_img_id
     deleteReport(id, (err) =>{
         if(!err){
             res.send(JSON.stringify("ok"))
@@ -109,14 +115,31 @@ function getSuperUser(callback){
 }
 
 function getImgReports(callback){
-    let sql = "SELECT * FROM report"
-    db.all(sql,(err, row) => {
-        callback(row)
+    let sql = "SELECT report.img_id, report.time, report.user_id, user.username as report_from FROM report LEFT JOIN user ON user.id=report.user_id"
+    let result = []
+    db.all(sql,(err, rows) => {
+        rows.forEach(rep =>{
+            sql = "SELECT user.username as name FROM user WHERE id = (select user_id from img where id = ?)"
+            db.get(sql, [rep.img_id], (err, user)=>{
+                result.push({img_id: rep.img_id, time: rep.time, report_from: rep.report_from, user_img: user.name})
+            });
+        });
+    })
+    setTimeout(()=>{
+        callback(result)
+    }, 250)
+}
+
+
+function deleteImg(id, callback){
+    let sql = "DELETE from img WHERE id = ?"
+    db.run(sql, [id], (data, err) => {
+        callback(err)
     })
 }
 
 function deleteReport(id, callback){
-    let sql = "DELETE from report WHERE id = ?"
+    let sql = "DELETE from report WHERE img_id = ?"
     db.run(sql, [id], (data, err) => {
         callback(err)
     })
