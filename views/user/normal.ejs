@@ -60,9 +60,11 @@
                     <p>Username</p>
                     <input type="text" placeholder="Username" value="<%= data.username %>">
                     <p>Conferma password</p>
-                    <input type="password" placeholder="Conferma password">
+                    <input type="password" placeholder="Conferma password" onkeyup="check()">
                 </div>
+                <p style="font-size: 5;display: none;" id="passError"></p>
             </div>
+            
             <button class="w3-button" onclick="changeMyInfo()">Applay</button>
         </div>
 
@@ -83,6 +85,17 @@
             const uname = "<%= data.username %>";
             const email = "<%= data.email %>";
 
+            function check(){
+                const inputsList = $("input");
+                let passwd = inputsList[1].value;
+                let confirmPasswd = inputsList[3].value;
+                if(passwd == confirmPasswd){
+                    $("#passError").html("password okay").css("color","green").css("display","block");
+                }else{
+                    $("#passError").html("password differenti").css("color","red").css("display","block");
+                }
+            }
+
             function changeMyInfo(){
                 const inputsList = $("input");
                 let newEmail = inputsList[0].value;
@@ -100,13 +113,15 @@
                 }
 
                 if(passwd && confirmPasswd){
-                    $.post("/user/changePass", {pass: passwd, confPass: confirmPasswd}, function(data, status){
-                        if((JSON.parse(data)).result == "ok"){
-                            alert("Password cambiata con successo :)")
-                        }else{
-                            alert("Errore, password non cambiata :(")
-                        }
-                    });    
+                    if(passwd == confirmPasswd){
+                        $.post("/user/changePass", {newPass: passwd}, function(data, status){
+                            if((JSON.parse(data)).result == "ok"){
+                                alert("Password cambiata con successo :)")
+                            }else{
+                                alert("Errore, password non cambiata :(")
+                            }
+                        }); 
+                    }
                 }
             }
         </script>

@@ -28,7 +28,14 @@ router.post('/changeInfo', checkAuthorization, (req,res)=>{
 })
 
 router.post('/changePass', checkAuthorization, (req,res)=>{
-    res.send(JSON.stringify({result: "ok"}))
+    let passwd = crypt.createHash('sha256').update(req.body.newPass).digest('hex').toString()
+    setPassword(passwd, req.session.username, (err)=>{
+        if(err){
+            res.status(400).send(JSON.stringify({result: "Error"}))
+        }else{
+            res.send(JSON.stringify({result: "ok"}))
+        }
+    })
 })
 
 function getUserInfo(username, callback){
@@ -41,6 +48,13 @@ function getUserInfo(username, callback){
 function setInfo(username, email, oldusername, callback){
     const sql = "UPDATE user SET username = ?, email = ? WHERE username = ?"
     db.run(sql, [username, email, oldusername], (data, err) => {
+        callback(err)
+    })
+}
+
+function setPassword(pass, username,callback){
+    const sql = "UPDATE user SET password = ? WHERE username = ?"
+    db.run(sql, [pass, username], (data, err) => {
         callback(err)
     })
 }
