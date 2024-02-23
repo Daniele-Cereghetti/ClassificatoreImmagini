@@ -85,9 +85,9 @@
 
             function changeMyInfo(){
                 const inputsList = $("input");
-                let user = inputsList[0].value;
+                let newEmail = inputsList[0].value;
                 let passwd = inputsList[1].value;
-                let newEmail = inputsList[2].value;
+                let user = inputsList[2].value;
                 let confirmPasswd = inputsList[3].value;
                 if (user != uname || newEmail != email){
                     $.post("/user/changeInfo", {username: user, mail: newEmail}, function(data, status){

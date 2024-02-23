@@ -17,7 +17,14 @@ router.get('/', checkAuthorization, (req,res)=>{
 })
 
 router.post('/changeInfo', checkAuthorization, (req,res)=>{
-    res.send(JSON.stringify({result: "ok"}))
+    setInfo(req.body.username, req.body.mail, req.session.username, (err) => {
+        if(err){
+            res.status(400).send(JSON.stringify({result: "Error"}))
+        }else{
+            req.session.username = req.body.username
+            res.send(JSON.stringify({result: "ok"}))
+        }
+    })
 })
 
 router.post('/changePass', checkAuthorization, (req,res)=>{
@@ -29,6 +36,13 @@ function getUserInfo(username, callback){
     db.get(sql, [username],(err, row)=>{
         callback(row)
     });
+}
+
+function setInfo(username, email, oldusername, callback){
+    const sql = "UPDATE user SET username = ?, email = ? WHERE username = ?"
+    db.run(sql, [username, email, oldusername], (data, err) => {
+        callback(err)
+    })
 }
 
 module.exports = router
