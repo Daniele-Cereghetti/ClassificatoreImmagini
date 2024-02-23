@@ -6,19 +6,11 @@ const path = require('path');
 const app = express()
 const port = 3000
 
-// requisito prossimo --> menu utente (reset password, ecc.)
 
 app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, "images")))
 app.use(express.static(path.join(__dirname, "style")))
-app.use(express.static(path.join(__dirname, 'node_modules/bootstrap-icons/font/'), {
-    setHeaders: function (res, path, stat) {
-      if (path.endsWith('.css')) {
-        // Set MIME type for CSS files to 'text/css'
-        res.set('Content-Type', 'text/css');
-      }
-    }
-}))
+app.use(express.static(path.join(__dirname, 'node_modules/bootstrap-icons/font/')))
 app.use(express.urlencoded({ extended : true, limit: '10mb' }))
 app.use(session({
     secret : 'exsperandos',
