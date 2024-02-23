@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const checkAuthorization = require(__dirname + '/../modules/checkSession');
 const sqlite = require('sqlite3').verbose()
 const fs = require('fs');
 
@@ -145,12 +146,5 @@ function deleteReport(id, callback){
     })
 }
 
-function checkAuthorization(req, res, next){
-    if(req.session.username && req.session.type == 1){
-        next();
-    }else{
-        res.status(403).redirect("/")
-    }
-}
 
 module.exports = router

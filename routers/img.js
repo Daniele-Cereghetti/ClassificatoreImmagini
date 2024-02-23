@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const checkAuthorization = require(__dirname + '/../modules/checkSession');
 const sqlite = require('sqlite3').verbose()
 
 let db = new sqlite.Database(__dirname + '/../db/classimg.db')
@@ -93,14 +94,6 @@ function reportImage(id, user, callback){
             callback(err)
         })
     });
-}
-
-function checkAuthorization(req, res, next){
-    if(req.session.username){
-        next();
-    }else{
-        res.status(403).redirect("/")
-    }
 }
 
 
