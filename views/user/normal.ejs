@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Classificatore immagini</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <style>
+            .input-container {
+                display: flex;
+                justify-content: space-between;
+            }
+            .input-container input {
+                width: 30%;
+                height: 50px;
+                margin-right: 10%;
+                margin-left: 20px;
+                margin-top: 5%;
+            }
+            .input-container p{
+                margin-top: 6%;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Navbar (sit on top) -->
+        <div class="w3-top">
+            <div class="w3-bar" id="myNavbar">
+                <a href="/" class="w3-bar-item w3-button">Home</a>
+                <div class="w3-bar-item w3-button w3-right w3-hide-small drop">
+                    <span><i class="fa fa-duotone fa-user"></i></span>
+                    <div class="drop-content">
+                        <a href="/img" class="w3-bar-item w3-button w3-hide-small">Return to site</a>
+                        <br>
+                        <a href="/login/logout" class="w3-bar-item w3-button w3-hide-small">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- First Parallax Image with Logo Text -->
+        <div class="bgimg-1 w3-display-container w3-opacity-min" id="home">
+            <div class="w3-display-middle" style="white-space:nowrap;">
+                <span class="w3-center w3-padding-large w3-black w3-xlarge w3-wide w3-animate-opacity">Profilo <span class="w3-hide-small">Utente</span></span>
+            </div>
+        </div>
+
+        <div class="w3-content w3-container  w3-center" id="portfolio">
+            <div class="w3-row-padding w3-center">
+                <div class="input-container">
+                    <p>Email</p>
+                    <input type="email" placeholder="email" value="<%= data.email %>">
+                    <p>Password</p>
+                    <input type="password" placeholder="Password">
+                </div>
+                <div class="input-container">
+                    <p>Username</p>
+                    <input type="text" placeholder="Username" value="<%= data.username %>">
+                    <p>Conferma password</p>
+                    <input type="password" placeholder="Conferma password">
+                </div>
+            </div>
+            <button class="w3-button" onclick="changeMyInfo()">Applay</button>
+        </div>
+
+        <!-- Footer -->
+        <footer class="w3-center w3-black w3-padding-64 w3-opacity w3-hover-opacity-off">
+            <a href="#home" class="w3-button w3-light-grey"><i class="fa fa-arrow-up w3-margin-right"></i>To the top</a>
+            <div class="w3-xlarge w3-section">
+                <i class="fa fa-facebook-official w3-hover-opacity"></i>
+                <i class="fa fa-instagram w3-hover-opacity"></i>
+                <i class="fa fa-snapchat w3-hover-opacity"></i>
+                <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+                <i class="fa fa-twitter w3-hover-opacity"></i>
+                <i class="fa fa-linkedin w3-hover-opacity"></i>
+            </div>
+        </footer>
+
+        <script>
+            const uname = "<%= data.username %>";
+            const email = "<%= data.email %>";
+
+            function changeMyInfo(){
+                const inputsList = $("input");
+                let user = inputsList[0].value;
+                let passwd = inputsList[1].value;
+                let newEmail = inputsList[2].value;
+                let confirmPasswd = inputsList[3].value;
+                if (user != uname || newEmail != email){
+                    $.post("/user/changeInfo", {username: user, mail: newEmail}, function(data, status){
+                        if((JSON.parse(data)).result == "ok"){
+                            alert("Informazioni cambiate con successo :)")
+                        }else{
+                            alert("Errore, informazioni non cambiate :(")
+                        }
+                    });
+                }
+
+                if(passwd && confirmPasswd){
+                    $.post("/user/changePass", {pass: passwd, confPass: confirmPasswd}, function(data, status){
+                        if((JSON.parse(data)).result == "ok"){
+                            alert("Password cambiata con successo :)")
+                        }else{
+                            alert("Errore, password non cambiata :(")
+                        }
+                    });    
+                }
+            }
+        </script>
+    </body>
+</html>
