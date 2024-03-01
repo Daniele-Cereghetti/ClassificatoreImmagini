@@ -1,4 +1,5 @@
-*.jpg
-node_modules
 helper/select.js
-*.db
+*.jpg
+
+node_modules
+db
