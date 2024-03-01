@@ -3,3 +3,4 @@ helper/select.js
 
 node_modules
 db
+*.db
