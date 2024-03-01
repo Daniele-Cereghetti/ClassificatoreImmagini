@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const checkAuthorization = require(__dirname + '/../modules/checkSession');
+const { body, matchedData, validationResult } = require('express-validator');
 const sqlite = require('sqlite3').verbose()
 const fs = require('fs');
 
@@ -16,24 +17,35 @@ router.get('/normal', checkAuthorization, (req,res)=>{
 
 
 // richiesta ajax per cercare utenti normali
-router.post('/normal/search', checkAuthorization, (req, res) => {
-    let value = req.body.item
-    getUsers(value, (names) =>{
-        res.send(JSON.stringify(names))
-    })
+router.post('/normal/search', checkAuthorization, body('item').notEmpty().trim().escape(), (req, res) => {
+    const result = validationResult(req);
+    if (result.isEmpty()){
+        let value = matchedData(req).item;
+        getUsers(value, (names) =>{
+            res.send(JSON.stringify(names))
+        })
+    }else{
+        res.status(404).send(JSON.stringify({}))
+    }
 })
 
 // ajax request per blocco utente
 // blocco così con quella email no nuovo account
-router.post('/block', checkAuthorization, (req, res) => {
-    let username = req.body.username
-    blockUser(username,(err) =>{
-        if(!err){
-            res.send(JSON.stringify("ok"))
-        }else{
-            res.status(404).send(JSON.stringify("error"))
-        }
-    })
+router.post('/block', checkAuthorization, body('username').notEmpty().trim().escape(),(req, res) => {
+    const result = validationResult(req);
+    if (result.isEmpty()){
+        let val = matchedData(req).username;
+        blockUser(val,(err) =>{
+            if(!err){
+                res.send(JSON.stringify("ok"))
+            }else{
+                res.status(404).send(JSON.stringify("error"))
+            }
+        })
+    }else{
+        res.status(404).send(JSON.stringify("error"))
+    }
+    
 })
 
 router.get('/super', checkAuthorization, (req,res)=>{
@@ -55,39 +67,49 @@ router.get('/foto', checkAuthorization, (req,res)=>{
 })
 
 //ajax eliminazione foto segnalata
-router.post('/foto/del', checkAuthorization, (req, res) => {
-    let id = req.body.rep_img_id
-    deleteReport(id,(err) =>{
-        if(!err){
-            deleteImg(id, (errImg)=>{
-                if(!errImg){
-                    fs.unlink(__dirname+"/../images/"+id+".jpg", (error) => {
-                        if (error){
-                            res.status(409).send(JSON.stringify("error"))
-                        }else{
-                            res.send(JSON.stringify("ok"))
-                        }
-                    })
-                }else{
-                    res.status(409).send(JSON.stringify("error"))
-                }
-            })
-        }else{
-            res.status(409).send(JSON.stringify("error"))
-        }
-    })
+router.post('/foto/del', checkAuthorization, body('rep_img_id').notEmpty().trim().escape(), (req, res) => {
+    const result = validationResult(req);
+    if (result.isEmpty()){
+        let id = matchedData(req).rep_img_id;
+        deleteReport(id,(err) =>{
+            if(!err){
+                deleteImg(id, (errImg)=>{
+                    if(!errImg){
+                        fs.unlink(__dirname+"/../images/"+id+".jpg", (error) => {
+                            if (error){
+                                res.status(409).send(JSON.stringify("error"))
+                            }else{
+                                res.send(JSON.stringify("ok"))
+                            }
+                        })
+                    }else{
+                        res.status(409).send(JSON.stringify("error"))
+                    }
+                })
+            }else{
+                res.status(409).send(JSON.stringify("error"))
+            }
+        })
+    }else{
+        res.status(404).send(JSON.stringify("error"))
+    }
 })
 
 //ajax mantenimento foto segnalata
-router.post('/foto/man', checkAuthorization, (req, res) => {
-    let id = req.body.rep_img_id
-    deleteReport(id, (err) =>{
-        if(!err){
-            res.send(JSON.stringify("ok"))
-        }else{
-            res.status(409).send(JSON.stringify("error"))
-        }
-    })
+router.post('/foto/man', checkAuthorization, body('rep_img_id').notEmpty().trim().escape(), (req, res) => {
+    const result = validationResult(req)
+    if (result.isEmpty()){
+        let id = matchedData(req).rep_img_id
+        deleteReport(id, (err) =>{
+            if(!err){
+                res.send(JSON.stringify("ok"))
+            }else{
+                res.status(409).send(JSON.stringify("error"))
+            }
+        })    
+    }else{
+        res.status(404).send(JSON.stringify("error"))
+    }
 })
 
 function getUsers(val, callback){
